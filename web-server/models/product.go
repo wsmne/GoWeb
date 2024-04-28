@@ -1,11 +1,11 @@
 package models
 
-type StudentRepo struct {
+type ProductRepo struct {
 	db *Data
 }
 type Product struct {
 	ID     int
-	Name   string
+	PName  string
 	Number int
 	Price  float32
 	Image  string
