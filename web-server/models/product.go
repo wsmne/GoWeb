@@ -1,8 +1,5 @@
 package models
 
-type ProductRepo struct {
-	db *Data
-}
 type Product struct {
 	ID     int
 	PName  string
