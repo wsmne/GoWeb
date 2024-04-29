@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"web-server/logger"
 	"web-server/models"
+	"web-server/routes"
 )
 
 func main() {
@@ -14,12 +15,7 @@ func main() {
 	}
 	router := gin.Default()
 
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"code": 0,
-			"msg":  "ok",
-		})
-	})
+	routes.RegisterRoute(router)
 
 	router.Run(":5001")
 }
