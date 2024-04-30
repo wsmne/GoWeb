@@ -1,17 +1,22 @@
 package models
 
+import "gorm.io/gorm"
+
 type User struct {
-	ID       int
-	UserName string
-	UserPW   string
-	Type     int
+	gorm.Model
+	UID      string `json:"uid,omitempty";gorm:"size:256" `
+	UserName string `json:"user_name";gorm:"size:256"`
+	UserPW   string `json:"user_pw";gorm:"size:256"`
+	Type     string `json:"type";gorm:"size:5"`
 }
 
-func GetUserByID(id string) (user User) {
-	Db.Debug().First(&user, id)
-	return user
+func GetUserByID(id string) (user User, err error) {
+	Db.AutoMigrate(&user)
+	err = Db.Debug().First(&user, id).Error
+	return user, err
 }
 func CreateUser(user User) error {
+	Db.AutoMigrate(&user)
 	err := Db.Model(&user).Create(user).Error
 	return err
 }
