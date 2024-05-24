@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/cast"
 	"net/http"
 	"web-server/logger"
 	"web-server/middleware"
@@ -9,8 +10,15 @@ import (
 )
 
 func GetUserByID(ctx *gin.Context) {
-	id := ctx.Param("id")
-	user, err := models.GetUserByID(id)
+	//if _, exist := ctx.Get("user"); exist == false {
+	//	ctx.JSON(http.StatusOK, gin.H{
+	//		"code": "15006",
+	//		"msg":  "无权限",
+	//	})
+	//	return
+	//}
+	id := ctx.Query("id")
+	user, err := models.GetUserByID(cast.ToUint(id))
 	if err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": "15001",
@@ -36,7 +44,7 @@ func Login(ctx *gin.Context) {
 		})
 		return
 	}
-	login, err := models.GetUserByID(user.UID)
+	login, err := models.GetUserByID(user.ID)
 	if err != nil {
 		logger.Log.Info("用户不存在，err : " + err.Error())
 		ctx.JSON(http.StatusOK, gin.H{
@@ -61,6 +69,7 @@ func Login(ctx *gin.Context) {
 		})
 		return
 	}
+
 }
 
 func Regist(ctx *gin.Context) {

@@ -4,13 +4,12 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	UID      string `json:"uid,omitempty";gorm:"size:256" `
 	UserName string `json:"user_name";gorm:"size:256"`
 	UserPW   string `json:"user_pw";gorm:"size:256"`
 	Type     string `json:"type";gorm:"size:5"`
 }
 
-func GetUserByID(id string) (user User, err error) {
+func GetUserByID(id uint) (user User, err error) {
 	Db.AutoMigrate(&user)
 	err = Db.Debug().First(&user, id).Error
 	return user, err

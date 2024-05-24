@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
+	"gorm.io/gorm"
 	"time"
 	"web-server/models"
 )
@@ -11,7 +12,7 @@ var CustomSecret = []byte("wsm的电子商城")
 
 type CustomClaims struct {
 	UserName string // 自定义字段
-	Id       string
+	Id       uint
 	Type     string
 	jwt.RegisteredClaims
 }
@@ -22,7 +23,7 @@ func GenToken(user models.User) (string, error) {
 	// 创建一个我们自己的声明
 	claims := &CustomClaims{
 		user.UserName, // 自定义字段
-		user.UID,
+		user.ID,
 		user.Type,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExpireDuration)),
@@ -53,15 +54,14 @@ func ParseToken(ctx *gin.Context) {
 	// 对token对象中的Claim进行类型断言
 	Claims, ok := token.Claims.(*CustomClaims)
 	if ok && token.Valid {
-		ctx.Set("auth", 0)
 		return // 校验token
 	}
 	user := &models.User{
-		UID:      Claims.Id,
+		Model:    gorm.Model{ID: Claims.Id},
 		UserName: Claims.UserName,
 		Type:     Claims.Type,
 	}
-	ctx.Set("auth", "1")
 	ctx.Set("user", user)
+	ctx.Next()
 	return
 }
