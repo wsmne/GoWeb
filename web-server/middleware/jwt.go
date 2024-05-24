@@ -62,6 +62,5 @@ func ParseToken(ctx *gin.Context) {
 		Type:     Claims.Type,
 	}
 	ctx.Set("user", user)
-	ctx.Next()
 	return
 }
